@@ -1,0 +1,59 @@
+{% macro header_menu(current_user) %}
+<style>
+  body {
+    background-color: #313131;
+  }
+
+  header {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    width: 100vw !important;
+    background-color: #222222 !important;
+    z-index: 5 !important;
+  }
+
+  .container {
+    padding-top: 75px;
+  }
+
+  *:not(input, option, textarea, button, select) {
+    color: #fff !important;
+  }
+
+  option,
+  input,
+  select {
+    color: #000 !important;
+  }
+
+  .collapse.show {
+    visibility: visible;
+  }
+
+  header .nav-link {
+    display: flex !important;
+  }
+
+  header .nav-link img {
+    filter: invert(1) !important;
+    margin-right: 5px !important;
+  }
+
+</style>
+<header class="navbar navbar-expand-lg justify-content-end">
+  <div class="container-fluid !justify-end">
+    <div class="navbar-nav">
+      <span class="nav-link active" aria-current="page">{{ current_user }}</span>
+      <a class="nav-link" href="/profile_view">
+        <img src="{{url_for('static',filename = 'ui/MdiAccount.png')}}" alt="Профиль" width="24" height="24"> Profile
+      </a>
+      <a class="nav-link" href="/logout">
+        <img src="{{url_for('static',filename = 'ui/MdiExitToApp.png')}}" alt="Выйти" width="24" height="24"> Logout
+      </a>
+    </div>
+  </div>
+</header>
+{% endmacro %}

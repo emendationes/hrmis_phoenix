@@ -1,0 +1,113 @@
+{% macro sidebar_menu(p_v) %}
+<style>
+  body {
+    display: flex;
+    min-height: 100dvh;
+  }
+
+  .sidebar {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    min-width: max-content !important;
+    background-color: #222222 !important;
+    z-index: 10 !important;
+  }
+
+  .sidebar .nav-link,
+  .sidebar a {
+    display: flex !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    padding: 0.5rem 1rem !important;
+    width: 100% !important;
+    text-align: left !important;
+    border-radius: 0 !important;
+    white-space: nowrap !important;
+    color: #fff !important;
+  }
+
+  .sidebar .nav-link img,
+  .sidebar a:not(.navbar-brand) img {
+    filter: invert(1) !important;
+    margin-right: 5px !important;
+  }
+
+  .accordion-button {
+    padding-left: 30px !important;
+  }
+
+  .accordion-button::after {
+    position: absolute !important;
+    left: 5px !important;
+    filter: invert(0.54) !important;
+  }
+
+  .accordion-item,
+  .accordion-button,
+  .accordion-body {
+    background-color: transparent !important;
+    color: #fff !important;
+  }
+
+</style>
+<nav class="navbar bg-light sidebar">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">
+      <img src="{{url_for('static',filename = 'ui/logo.png')}}" alt="" width="30" height="24">
+      Phoenix
+    </a>
+  </div>
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page" href="/dashboard">
+        <img src="{{url_for('static',filename = 'ui/MdiViewDashboard.png')}}" alt="" width="24" height="24"> Dashboard
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/search_and_tree">
+        <img src="{{url_for('static',filename = 'ui/MdiAccountSearch.png')}}" alt="" width="24" height="24"> Employee Search
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="collapse" href="#absenceMenu" role="button" aria-expanded="false" aria-controls="absenceMenu">
+        <img src="{{url_for('static',filename = 'ui/MdiBed.png')}}" alt="" width="24" height="24"> Absence
+      </a>
+      <div class="collapse" id="absenceMenu">
+        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+          <li><a href="/absences" class="link-dark rounded"><img src="{{url_for('static',filename = 'ui/MdiBed.png')}}" alt="" width="24" height="24"> My Absence</a></li>
+          <li><a href="/absence_approves" class="link-dark rounded"><img src="{{url_for('static',filename = 'ui/MdiThumbsUpDown.png')}}" alt="" width="24" height="24"> Authorisation</a></li>
+        </ul>
+      </div>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="collapse" href="#holidayMenu" role="button" aria-expanded="false" aria-controls="holidayMenu">
+        <img src="{{url_for('static',filename = 'ui/MdiPalmTree.png')}}" alt="" width="24" height="24"> Holiday
+      </a>
+      <div class="collapse" id="holidayMenu">
+        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+          <li><a href="/holidays" class="link-dark rounded"><img src="{{url_for('static',filename = 'ui/MdiPalmTree.png')}}" alt="" width="24" height="24"> My Holiday</a></li>
+          <li><a href="/holiday_approves" class="link-dark rounded"><img src="{{url_for('static',filename = 'ui/MdiInboxArrowDown.png')}}" alt="" width="24" height="24"> Requests</a></li>
+        </ul>
+      </div>
+    </li>
+    {% if p_v.year or p_v.department or p_v.project or p_v.jobroles or p_v.users %}
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="collapse" href="#adminMenu" role="button" aria-expanded="false" aria-controls="adminMenu">
+        <img src="{{url_for('static',filename = 'ui/MdiCog.png')}}" alt="" width="24" height="24"> Admin
+      </a>
+      <div class="collapse" id="adminMenu">
+        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+          {% if p_v.year %}<li><a href="/company_years" class="link-dark rounded"><img src="{{url_for('static',filename = 'ui/MdiCalendarBlank.png')}}" alt="" width="24" height="24"> Company Years</a></li>{% endif %}
+          {% if p_v.department %}<li><a href="/departments" class="link-dark rounded"><img src="{{url_for('static',filename = 'ui/MdiFileTree.png')}}" alt="" width="24" height="24"> Departments</a></li>{% endif %}
+          {% if p_v.project %}<li><a href="/projects" class="link-dark rounded"><img src="{{url_for('static',filename = 'ui/MdiJira.png')}}" alt="" width="24" height="24"> Projects</a></li>{% endif %}
+          {% if p_v.jobroles %}<li><a href="/job_roles" class="link-dark rounded"><img src="{{url_for('static',filename = 'ui/MdiBadgeAccountHorizontal.png')}}" alt="" width="24" height="24"> Job Roles</a></li>{% endif %}
+          {% if p_v.users %}<li><a href="/users" class="link-dark rounded"><img src="{{url_for('static',filename = 'ui/MdiAccountGroup.png')}}" alt="" width="24" height="24"> Users</a></li>{% endif %}
+        </ul>
+      </div>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endmacro %}

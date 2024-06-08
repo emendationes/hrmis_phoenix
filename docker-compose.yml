@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  postgres-container:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: phoenix_db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./database:/docker-entrypoint-initdb.d
+    container_name: postgres-container
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    depends_on:
+      - postgres-container
+    container_name: pgadmin
+
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres-container
+    environment:
+      SESSION_LIFETIME_MINS: 300
+    container_name: flask-app
+
+volumes:
+  postgres-data:

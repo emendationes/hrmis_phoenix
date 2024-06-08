@@ -1,0 +1,68 @@
+{% from "sidebar.html" import sidebar_menu %}
+{% from "header.html" import header_menu %}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Holiday Authorization</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+  {{ sidebar_menu(p_v) }}
+  {{ header_menu(current_user.full_name) }}
+  <div class="container mt-3">
+    <h1 class="h1">Holiday Authorization</h1>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Employee Name</th>
+          <th>Financial Year</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Approved</th>
+          <th>Cancelled</th>
+          <th>Reason (if any)</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for holiday in holidays %}
+        <tr>
+          <td>{{ holiday['Employee Name'] }}</td>
+          <td>{{ holiday['Financial Year'] }}</td>
+          <td>{{ holiday['Start Date'] }}</td>
+          <td>{{ holiday['End Date'] }}</td>
+          <td>{{ 'Yes' if holiday['Approved'] else 'No' }}</td>
+          <td>{{ 'Yes' if holiday['Cancelled'] else 'No' }}</td>
+          <td>{{ holiday['Disapproval Reason'] }}</td>
+          <td>
+            <form method="post" action="/approve_holiday/{{ holiday['Holiday ID'] }}">
+              <button type="submit" class="btn btn-success" {{ 'disabled' if holiday['Approved'] or holiday['Cancelled'] }}>Approve</button>
+            </form>
+            <form method="post" action="/reject_holiday/{{ holiday['Holiday ID'] }}">
+              <input type="text" name="reason" placeholder="Reason for rejection" required {{ 'disabled' if holiday['Approved'] or holiday['Cancelled'] }}>
+              <button type="submit" class="btn btn-warning" {{ 'disabled' if holiday['Approved'] or holiday['Cancelled'] }}>Cancel</button>
+            </form>
+            <form method="post" action="/delete_holiday/{{ holiday['Holiday ID'] }}">
+
+              <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="8">No holiday requests found</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

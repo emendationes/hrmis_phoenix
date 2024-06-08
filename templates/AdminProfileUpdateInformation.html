@@ -1,0 +1,254 @@
+{% from "sidebar.html" import sidebar_menu %}
+{% from "header.html" import header_menu %}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Personal Information</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+  {{ sidebar_menu(p_v) }}
+  {{ header_menu(current_user.full_name) }}
+  <div class="container mt-3">
+    <h1 class="h1">Edit Personal Information</h1>
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab" aria-controls="general" aria-selected="true">General</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="employee-tab" data-bs-toggle="tab" data-bs-target="#employee" type="button" role="tab" aria-controls="employee" aria-selected="false">Employee</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">Contact Information</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="working-hours-tab" data-bs-toggle="tab" data-bs-target="#working-hours" type="button" role="tab" aria-controls="working-hours" aria-selected="false">Working Hours</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="holiday-tab" data-bs-toggle="tab" data-bs-target="#holiday" type="button" role="tab" aria-controls="holiday" aria-selected="false">Holiday Entitlement</button>
+      </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+      <!-- General Info Tab -->
+      <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
+        <form method="post" action="/update_general_info/{{ id }}">
+          <div class="mb-3">
+            <label for="full_name" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="full_name" name="full_name" value="{{ user_info[0] }}" required>
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" value="{{ user_info[1] }}" required>
+          </div>
+          <div class="mb-3">
+            <label for="role" class="form-label">Role</label>
+            <select class="form-control" id="role" name="role">
+              {% for role in roles %}
+              <option value={{ role.id }} {% if role.id==user_info[2] %}selected{% endif %}>{{ role.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary my-[6px]">Save</button>
+        </form>
+        <form method="post" action="/token_gen_req/{{ id }}">
+          {% if user_info[3] is string%}
+          {{user_info[3]}}
+          {% else %}
+          <button type="submit" class="btn btn-primary">Generate a token</button>
+          {% endif %}
+        </form>
+      </div>
+
+      <!-- Employee Info Tab -->
+      <div class="tab-pane fade" id="employee" role="tabpanel" aria-labelledby="employee-tab">
+        <form method="post" action="/update_professional_info/{{ id }}" enctype="multipart/form-data">
+          <div class="mb-3">
+            <label for="reference" class="form-label">Reference</label>
+            <input type="text" class="form-control" id="reference" name="reference" value="{{ professional_info['Reference'] }}" required>
+          </div>
+          <div class="mb-3">
+            <label for="manager" class="form-label">Manager</label>
+            <select class="form-control" id="manager" name="manager">
+              <option value="-1">Not selected</option>
+              {% for manager in managers %}
+              <option value="{{ manager.id }}" {% if manager.name==professional_info['Manager'] %}selected{% endif %}>{{ manager.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="department" class="form-label">Department</label>
+            <select class="form-control" id="department" name="department">
+              <option value="-1">Not selected</option>
+              {% for department in departments %}
+              <option value="{{ department.id }}" {% if department.title==professional_info['Department'] %}selected{% endif %}>{{ department.title }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="job_role" class="form-label">Job Role</label>
+            <select class="form-control" id="job_role" name="job_role">
+              <option value="-1">Not selected</option>
+              {% for job_role in job_roles %}
+              <option value="{{ job_role.id }}" {% if job_role.name==professional_info['Job Role'] %}selected{% endif %}>{{ job_role.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="project" class="form-label">Project</label>
+            <select class="form-control" id="project" name="project">
+              <option value="-1">Not selected</option>
+              {% for project in projects %}
+              <option value="{{ project.id }}" {% if project.id==professional_info['Project_ID'] %}selected{% endif %}>{{ project.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="date_of_birth" class="form-label">Date Of Birth</label>
+            <input type="date" , class="form-control" id="date_of_birth" name="date_of_birth" {%if professional_info['Date of Birth'] is string %} value="{{ professional_info['Date of Birth'] }}" {%endif%}>
+          </div>
+          <div class="mb-3">
+            <label for="service_start" class="form-label">Service Start</label>
+            <input type="date" , class="form-control" id="service_start" name="service_start" {%if professional_info['Service Start Day'] is string %} value="{{ professional_info['Service Start Day'] }}" {%endif%}>
+          </div>
+          <div class="mb-3">
+            <label for="profile_image_id" class="form-label">Profile Image</label>
+            {%if professional_info['Profile Image'] is string %}
+            <img src="{{ professional_info['Profile Image'] }}" alt="Image {{professional_info['Profile Image']}} missing on server" width="250" height="350" />
+            {%endif%}
+            <input type="file" class="form-control" id="profile_image_id" name="profile_image" accept="image/png">
+          </div>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+        {%if professional_info['Service End Day'] is string %}
+        <form method="post" action="/fire_employee/{{ id }}">
+          <button type="submit" class="btn btn-primary">Fire</button>
+        </form>
+        {%endif%}
+      </div>
+
+      <!-- Contact Info Tab -->
+      <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+        <form method="post" action="/update_contact_info/{{ id }}">
+          <div class="mb-3">
+            <label for="address_line" class="form-label">Address Line</label>
+            <input type="text" class="form-control" id="address_line" name="address_line" value="{{ contact_info['Address Line'] }}" required>
+          </div>
+          <div class="mb-3">
+            <label for="city" class="form-label">City</label>
+            <input type="text" class="form-control" id="city" name="city" value="{{ contact_info['City'] }}" required>
+          </div>
+          <div class="mb-3">
+            <label for="region" class="form-label">Region/State/Province</label>
+            <input type="text" class="form-control" id="region" name="region" value="{{ contact_info['Region/State/Province'] }}" required>
+          </div>
+          <div class="mb-3">
+            <label for="postal_code" class="form-label">Postal/Zip Code</label>
+            <input type="text" class="form-control" id="postal_code" name="postal_code" value="{{ contact_info['Postal/Zip Code'] }}" required>
+          </div>
+          <div class="mb-3">
+            <label for="country" class="form-label">Country</label>
+            <select class="form-control" id="country" name="country">
+              {% for country in countries %}
+              <option value="{{ country.id }}" {% if country.id==contact_info['Country_ID'] %}selected{% endif %}>{{ country.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="mobile_phone" class="form-label">Mobile Phone</label>
+            <input type="text" class="form-control" id="mobile_phone" name="mobile_phone" value="{{ contact_info['Mobile Phone'] }}" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+      </div>
+
+      <!-- Working Hours Tab -->
+      <div class="tab-pane fade" id="working-hours" role="tabpanel" aria-labelledby="working-hours-tab">
+        <form method="post" action="/update_working_hours/{{ id }}">
+          <div class="mb-3">
+            <label for="monday_start" class="form-label">Monday Start</label>
+            <input type="time" class="form-control" id="monday_start" name="monday_start" value="{{ working_hours['Monday']['Start'] }}" required>
+            <label for="monday_end" class="form-label">Monday End</label>
+            <input type="time" class="form-control" id="monday_end" name="monday_end" value="{{ working_hours['Monday']['End'] }}" required>
+          </div>
+          <div class="mb-3">
+            <label for="tuesday_start" class="form-label">Tuesday Start</label>
+            <input type="time" class="form-control" id="tuesday_start" name="tuesday_start" value="{{ working_hours['Tuesday']['Start'] }}" required>
+            <label for="tuesday_end" class="form-label">Tuesday End</label>
+            <input type="time" class="form-control" id="tuesday_end" name="tuesday_end" value="{{ working_hours['Tuesday']['End'] }}" required>
+          </div>
+          <div class="mb-3">
+            <label for="wednesday_start" class="form-label">Wednesday Start</label>
+            <input type="time" class="form-control" id="wednesday_start" name="wednesday_start" value="{{ working_hours['Wednesday']['Start'] }}" required>
+            <label for="wednesday_end" class="form-label">Wednesday End</label>
+            <input type="time" class="form-control" id="wednesday_end" name="wednesday_end" value="{{ working_hours['Wednesday']['End'] }}" required>
+          </div>
+          <div class="mb-3">
+            <label for="thursday_start" class="form-label">Thursday Start</label>
+            <input type="time" class="form-control" id="thursday_start" name="thursday_start" value="{{ working_hours['Thursday']['Start'] }}" required>
+            <label for="thursday_end" class="form-label">Thursday End</label>
+            <input type="time" class="form-control" id="thursday_end" name="thursday_end" value="{{ working_hours['Thursday']['End'] }}" required>
+          </div>
+          <div class="mb-3">
+            <label for="friday_start" class="form-label">Friday Start</label>
+            <input type="time" class="form-control" id="friday_start" name="friday_start" value="{{ working_hours['Friday']['Start'] }}" required>
+            <label for="friday_end" class="form-label">Friday End</label>
+            <input type="time" class="form-control" id="friday_end" name="friday_end" value="{{ working_hours['Friday']['End'] }}" required>
+          </div>
+          <div class="mb-3">
+            <label for="saturday_start" class="form-label">Saturday Start</label>
+            <input type="time" class="form-control" id="saturday_start" name="saturday_start" value="{{ working_hours['Saturday']['Start'] }}">
+            <label for="saturday_end" class="form-label">Saturday End</label>
+            <input type="time" class="form-control" id="saturday_end" name="saturday_end" value="{{ working_hours['Saturday']['End'] }}">
+          </div>
+          <div class="mb-3">
+            <label for="sunday_start" class="form-label">Sunday Start</label>
+            <input type="time" class="form-control" id="sunday_start" name="sunday_start" value="{{ working_hours['Sunday']['Start'] }}">
+            <label for="sunday_end" class="form-label">Sunday End</label>
+            <input type="time" class="form-control" id="sunday_end" name="sunday_end" value="{{ working_hours['Sunday']['End'] }}">
+          </div>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+      </div>
+
+      <!-- Holiday Entitlement Tab -->
+      <div class="tab-pane fade" id="holiday" role="tabpanel" aria-labelledby="holiday-tab">
+        <a href="/add_holiday_entitlement/{{ id }}">
+          <button class="btn btn-primary my-[6px]">New</button>
+        </a>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Entitlement (Hours)</th>
+              <th>Confirm</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for entitlement in entitlements %}
+            <tr>
+              <form method="post" action="/update_holiday_entitlements/{{ id }}">
+                <td><input type="hidden" id="year_id" name="{{ entitlement['Financial Year_ID'] }}" value="{{ entitlement['Financial Year'] }}">{{ entitlement['Financial Year'] }}</td>
+                <td><input type="number" id="time" name="time" value="{{ entitlement['Holiday Hours'] }}"></td>
+                <td><button type="submit" class="btn btn-primary">Update</button></td>
+              </form>
+              {% else %}
+            <tr>
+              <td colspan="4">No entitlement found</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

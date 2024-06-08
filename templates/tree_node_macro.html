@@ -1,0 +1,22 @@
+{% macro render_department(department, data) %}
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="heading{{ department.id }}">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ department.id }}" aria-expanded="false" aria-controls="collapse{{ department.id }}">
+                {{ department.title[1] }}
+            </button>
+        </h2>
+        <div id="collapse{{ department.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ department.id }}">
+            <div class="accordion-body">
+                <ul>
+                    {% for emp in department.employees %}
+                        <li class="employee"> <a href = "/search_and_tree/{{ emp.emp_id }}">{{ emp.emp_name }}</a></li>
+                        
+                    {% endfor %}
+                    {% for child_id in department.children %}
+                        {{ render_department(data[child_id], data) }}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endmacro %}

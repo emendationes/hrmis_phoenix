@@ -1,0 +1,63 @@
+{% from "sidebar.html" import sidebar_menu %}
+{% from "header.html" import header_menu %}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>My Absences</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+  {{ sidebar_menu(p_v) }}
+  {{ header_menu(current_user.full_name) }}
+  <div class="container mt-3">
+    <h1 class="h1">My Absences</h1>
+    <a href="/add_absence" class="btn btn-primary mb-3">New</a>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Financial Year</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Authorized</th>
+          <th>Cancelled</th>
+          <th>Reason (if any)</th>
+          <th>Attachments (if any)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if absences|length == 0 %}
+        <tr>
+          <td colspan="6">No absences recorded</td>
+        </tr>
+        {% endif %}
+        {% for absence in absences %}
+        <tr>
+          <td>{{ absence['Financial Year'] }}</td>
+          <td>{{ absence['Start Date'] }}</td>
+          <td>{{ absence['End Date'] }}</td>
+          <td>{{ 'Yes' if absence['Authorized'] else 'No' }}</td>
+          <td>{{ 'Yes' if absence['Cancelled'] else 'No' }}</td>
+          <td>{{ absence['Unauthorize Reason'] }}</td>
+          <td>
+            {%for attachment in absence['Attachments']%}
+            <a href="/get_attachment/{{ attachment.path }}">{{attachment.title}}</a>
+            {%endfor%}
+          </td>
+        </tr>
+        {% endfor %}
+
+
+
+      </tbody>
+    </table>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

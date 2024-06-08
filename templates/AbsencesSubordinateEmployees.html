@@ -1,0 +1,76 @@
+{% from "sidebar.html" import sidebar_menu %}
+{% from "header.html" import header_menu %}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Absence Authorization</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  {{ sidebar_menu(p_v) }}
+  {{ header_menu(current_user.full_name) }}
+  <div class="container mt-3">
+    <h1 class="h1">Absence Authorization</h1>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Employee Name</th>
+          <th>Financial Year</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Reason</th>
+          <th>File Name</th>
+          <th>Authorized</th>
+          <th>Cancelled</th>
+          <th>Reason (if any)</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for absence in absences %}
+        <tr>
+          <td>{{ absence['Employee Name'] }}</td>
+          <td>{{ absence['Financial Year'] }}</td>
+          <td>{{ absence['Start Date'] }}</td>
+          <td>{{ absence['End Date'] }}</td>
+          <td>{{ absence['Reason'] }}</td>
+          <td>
+            {% for attachment in absence['Attachments'] %}
+            <a href="/get_attachment/{{ attachment.path }}">{{attachment.title}}</a><br>
+            {% endfor %}
+          </td>
+          <td>{{ 'Yes' if absence['Authorized'] else 'No' }}</td>
+          <td>{{ 'Yes' if absence['Cancelled'] else 'No' }}</td>
+          <td>{{ absence['Disapproval Reason'] }}</td>
+          <td>
+            <form method="post" action="/approve_absence/{{ absence['ID'] }}">
+              <button type="submit" class="btn btn-success" {{ 'disabled' if absence['Authorized'] or absence['Cancelled'] }}>Approve</button>
+            </form>
+            <form method="post" action="/reject_absence/{{ absence['ID'] }}">
+              <input type="text" name="reason" placeholder="Reason for rejection" required {{ 'disabled' if absence['Authorized'] or absence['Cancelled'] }}>
+              <button type="submit" class="btn btn-warning" {{ 'disabled' if absence['Authorized'] or absence['Cancelled'] }}>Cancel</button>
+            </form>
+            <form method="post" action="/delete_absence/{{ absence['ID'] }}">
+              <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="8">No absence requests found</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

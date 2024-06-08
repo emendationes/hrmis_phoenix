@@ -1,0 +1,83 @@
+{% from "sidebar.html" import sidebar_menu %}
+{% from "tree_node_macro.html" import render_department with context %}
+{% from "header.html" import header_menu %}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Employee Structure</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .department {
+      margin-top: 10px;
+    }
+
+    .employee {
+      margin-left: 20px;
+    }
+
+    .sub-department {
+      margin-left: 40px;
+    }
+
+  </style>
+</head>
+
+<body>
+  {{ sidebar_menu(p_v) }}
+  {{ header_menu(current_user.full_name) }}
+  <div class="container mt-3">
+    <h1 class="h1">Employee Structure</h1>
+    <div class="mb-3">
+      <input type="text" class="form-control" id="searchEmployee" placeholder="Search for employees">
+    </div>
+    <div class="accordion" id="departmentAccordion">
+      {% for key, val in data.items() if val.parent_id == -1 %}
+        {{ render_department(val, data) }}
+      {% endfor %}
+    </div>
+    {% if emp_data is defined %}
+    <div class="mb-3">
+      <div>
+        {% if emp_data['Profile File Name'] is string %}
+        <img src="{{ url_for('static', filename=emp_data['Profile File Name']) }}" alt="Profile Image">
+        {% else %}
+        <img src="{{ url_for('static', filename = 'ui/MdiAccount.png') }}" width="50" height="50" alt="Profile Image">
+        {% endif %}
+      </div>
+      <div>
+        <h3>{{ emp_data['Full Name'] }}</h3>
+        <p>{{ emp_data['Job Role'] }}</p>
+        <p>{{ emp_data['Email'] }}</p>
+        <p>📞 {{ emp_data['Mobile Number'] }}</p>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <script>
+    document.getElementById('searchEmployee').addEventListener('input', function () {
+      let searchValue = this.value.toLowerCase();
+      let allItems = document.querySelectorAll('.accordion-button');
+      allItems.forEach(function (item) {
+        let text = item.textContent.toLowerCase();
+        if (text.includes(searchValue)) {
+          item.classList.remove('collapsed');
+          item.setAttribute('aria-expanded', 'true');
+          item.nextElementSibling.classList.add('show');
+        } else {
+          item.classList.add('collapsed');
+          item.setAttribute('aria-expanded', 'false');
+          item.nextElementSibling.classList.remove('show');
+        }
+      });
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
